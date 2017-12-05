@@ -55,7 +55,7 @@ Vi skal bruge et program som hedder "Putty" til at forbinde til serveren, via SS
 
 Du kan download [Putty her](http://www.putty.org).
 
-1. Åben Putty og kopir ip-adressen på servere, fra Digital Ocean. og indtast den i "Host name(or IP address). port forbliver 22, da det er SSH porten, vi forbinder over.
+1. Åben Putty og kopir ip-adressen på servere, fra Digital Ocean og indtast den i "Host name(or IP address). port forbliver 22, da det er SSH porten, vi forbinder over.
 
 2. Gem denne session, ved at give den et navn under "Saved Sessions" og tryk på "Save". Nu kan du nemmere koble på serveren, ved senere brug.
 
