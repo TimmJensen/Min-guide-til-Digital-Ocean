@@ -307,5 +307,16 @@ et nyt vindue skulle gerne poppe frem.
 
 12. lokaliser mappen, du har exporteret dataen til og vælg import.
 
+Du har nu dataen i  den nye database.
 
 
+
+
+
+# De små tricks
+
+* Hvis importen af databasen fejler, prøv med med direkte input via query.
+
+* Hvis importen af data via query fejlermelder med: database ikke valgt.
+
+Over accesstoken skriv: USE [databasenavn]
