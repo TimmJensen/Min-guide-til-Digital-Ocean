@@ -91,6 +91,7 @@ sudo apt-get install npm
 ```
 På CentOS bruger man "YUM" til at installere med.
 
+### 1. Installation af _Nano_
 1. Vi starter med at installere den mest basale notepad for linux: Nano
 
 ```
@@ -98,4 +99,213 @@ yum install nano
 ```
 
 Kommandoen kørers og den vil give dig et overblik over hvad den henter/installerer, og vi kan bekræfte at det er okay, ved at skrive: y eller yes.
+
+### 2. Installation af _MySQL_
+
+Vi skal installere og opsætte mysql på serveren, så vores kommende hjemmesie, kan forbinde til den. Vi indsætter noget eksempel data, fra en tidligere database (fra Hi-Fi Projektet).
+
+1. Start med at udfører følgene kommando, for at starte installationen af MySQL.
+
+```
+yum install mysql-server
+```
+
+Igen vil du kunne se hvad kommandoen installere for dig og du skal acceptere ved at skrive "j" eller "Ja". Installationen færdiggøres.
+
+2. Nu skal vi så starte den service vi lige har installeret _MySQL_
+
+Kør kommandoen:
+```
+service mysqld start
+```
+
+Du kan udfører følgene kommandoer for at start, stoppe eller genstarte servicen
+```
+service mysqld start/stop/restart
+```
+
+Du skulle gerne modtage en status: "OK" med grøn skrift, som er et tegn på at den kunne starte, uden problemer.
+
+3. Vi skal nu konfigurere mysql-servicen, så vi oprette forbindelse og anvende databasen uden problemer.
+
+Vi skal kører kommandoen:
+```
+sudo /usr/bin/mysql_secure_installation
+```
+
+Når du har kørt kommandoen, bliver du bedt om at indtaste den nuværende ROOT adgangskode, for at kunne konfigurere _MySQL_. Hvis det ikke er sat et password, skal du bare trykke _ENTER_.
+
+4. Du bliver nu spurgt, om du vil opsætte en ny adgangskode for root-brugeren, til mysql. Vi siger selvfølgelig "Y" eller "YES", da vi gerne vil kunne forbinde til databasen på sikker vis.
+
+indtast nu en ny adgangskode og bekræft.
+
+5. Nu bliver du spurgt om du vil fjerne anonyme brugere og det vil vi gerne, da vi ikke kender til dem og det kan potention blive et sikkerhedsproblem.
+
+6. Denne gang spørger den om du vil tillade at, der kan bliver oprettet forbindelse til databasen, ved fjernkontrol. Det vil vi også meget gerne kunne, da vi skal overfører data til dens database. Så her svarer vi _NEJ_
+
+7. og til næst sidst, vil vi meget gerne fjerne nuværende _test_ databaser.
+
+8. til sidst vil vi gerne genindlæse tilladelser.
+
+Så er MySQL sat op på serveren korrekt.
+
+### 3. Installation af Node.js
+
+1. Vi starter med at installere alle nødvændighederne for at kunne kører node.js korrekt på serveren.
+
+Kør følgene kommandoer:
+```
+yum install epel-release
+yum install nodejs
+yum install npm
+```
+
+2. Vi skal også lige installere et module til node, som vil holde vores node.js opdateret.
+```
+npm install -g n 
+```
+
+3. Nu skal vi så lige opdatere node før vi går igang med at bruge det.
+
+```
+n lts
+```
+
+Så får at tjekke versionen af node: køres kommandoen:
+
+```
+n
+```
+
+Får at komme ud af "Tjek versionen" trykker du på __CTRL + C__
+
+__Genstart din linux-box nu, før du fortsætter.__
+
+
+### 4. installation af PM2-modulet.
+
+Vi installere et modul kaldet "PM2", som kan start og overvåge vores server og dens filer, med andre ord, PM2 er en process manager til Node.js applikationer.
+
+1. For at installere PM2, kør kommandoen:
+```
+npm install -g pm2
+```
+
+2. For at starte PM2's process:
+```
+pm2 startup
+```
+
+### 5. Installation af __GIT__
+
+Vi skal installere __GIT__ så vi kan clone, pull og evt. push til github.
+
+1. Installer GIT ved at kører:
+```
+yum install git
+```
+
+2. Konfigurer GIT ved at tilføje navn og email:
+
+```
+git config --global user.name "Dit navn"
+git config --global user.email "din@email.dk"
+```
+
+3. Vi kan tjekke konfigurationen ved at skrive:
+```
+nano ~/.gitconfig
+```
+
+og lukke den igen ved: CTRL + X
+
+### 6. Opret et nøglesæt til at logge ind på GitHub
+Vi skal oprette en SSH-key fra serveren, så vi kan forbinde til vores Github konto.
+
+1. Opret en SSH key:
+```
+ssh-keygen -t rsa
+```
+
+2. Kopir din SSH-key:
+```
+cat ~/.ssh/id_rsa.pub
+```
+Kopier indholdet af den offentlige nøgle til GitHub -> Settings -> SSH and GPG keys -> New SSH key
+
+### 7. Opret en mappe til din applikation
+
+1. start med at oprette en mappe:
+
+```
+mkdir ~/www
+```
+
+Naviger ind i mappen
+```
+cd ~/www
+```
+
+### 8. Klon dit repository fra GitHub
+
+1. Clon et repository:
+```
+git clone git@github.com:brugernavn/repository 
+```
+
+2.  Opdater det clonede repository:
+```
+git pull git@github.com:brugernavn/repository master
+```
+
+
+### 9. Opsæt databasen
+[hent mysql workbench](https://www.mysql.com/products/workbench/)
+
+1. Start med at opsætte mysql på linuxmaskinen:
+```
+mysql -p
+```
+
+og indtast nu det password vi sat for root.
+
+2. Nu skal vi give tilladelse til at logge ind og fortage handlinger på mysql, på andre ip-adresser, end localhost.
+
+```
+GRANT ALL ON *.* to 'root'@'%';
+```
+
+Du skulle gern modtage status: "Query OK"
+
+3. Vi opretter nu et nyt kodeord for root, så vi kan logge ind fra fjernt. Vi kan vælge at bruge den samme kode eller en helt ny kode.
+
+```
+SET PASSWORD FOR 'root'@'%' = PASSWORD('root');
+```
+og for at komme ud af mysql terminalen:
+```
+quit
+```
+
+4. Åben nu mysql workbench, og tilføj en ny forbindelse
+
+5. vi skal nu oprette et nyt schema (database). Dette gøres ved at klikke på database ikonet, nr. 4 fra venstre, i top baren.
+
+6. Giv den et navn: "hifi" og tryk "APPLY"
+
+et nyt vindue skulle gerne poppe frem.
+
+7. Tryk apply igen og close, hvis alt er okay.
+
+8. opret nu forbindelse til din nuværende database (lokalt), og marker hifi-databasen.
+
+9. tryk nu på server og "Data export"
+
+10. vælg databasen og tryk på start export.
+
+11. Så skal vi ind på den forrige session, altså serverens database. og gøre det samme step, dog vælg import denne gang.
+
+12. lokaliser mappen, du har exporteret dataen til og vælg import.
+
+
 
